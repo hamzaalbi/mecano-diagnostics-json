@@ -1,0 +1,44 @@
+{
+  "categories": [
+    {
+      "id": "engine",
+      "label": "Moteur",
+      "icon": "🔧"
+    },
+    {
+      "id": "transmission",
+      "label": "Transmission",
+      "icon": "⚙️"
+    },
+    {
+      "id": "braking",
+      "label": "Freinage",
+      "icon": "🛑"
+    },
+    {
+      "id": "electrical",
+      "label": "Électricité / Électronique",
+      "icon": "🔌"
+    },
+    {
+      "id": "ac",
+      "label": "Climatisation",
+      "icon": "❄️"
+    },
+    {
+      "id": "suspension",
+      "label": "Suspension",
+      "icon": "🔩"
+    },
+    {
+      "id": "steering",
+      "label": "Direction",
+      "icon": "🎯"
+    },
+    {
+      "id": "exhaust",
+      "label": "Échappement",
+      "icon": "💨"
+    }
+  ]
+}
