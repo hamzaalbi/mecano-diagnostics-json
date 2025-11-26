@@ -1,0 +1,367 @@
+{
+  "make": "volkswagen",
+  "model": "jetta",
+  "year": 2013,
+  "fuel": "essence",
+  "engines": [
+    {
+      "name": "2.0L 8v MPI",
+      "engine_code": "CBPA",
+      "displacement_l": 2.0,
+      "cylinders": 4,
+      "power_hp": 115,
+      "power_kw": 85,
+      "torque_nm": 170,
+      "injection_type": "Injection multipoint séquentielle",
+      "key_points": [
+        "Moteur simple arbre à cames en tête, 8 soupapes.",
+        "Distribution par courroie, pas de calage variable.",
+        "Injection essence basse pression avec régulateur autour de 4.0 bar.",
+        "Système d’allumage à bobines crayons individuelles."
+      ],
+      "sensors": {
+        "ckp": {
+          "name": "Capteur de vilebrequin",
+          "type": "Effet Hall 3 fils",
+          "location": "Boîte de vitesses, proche de la couronne du volant moteur.",
+          "pins": [
+            {
+              "pin": 1,
+              "signal": "+5V référence",
+              "expected_voltage_v": 5.0
+            },
+            {
+              "pin": 2,
+              "signal": "Signal CKP",
+              "expected_voltage_v": "Carré 0–5 V pendant le démarrage et moteur tournant"
+            },
+            {
+              "pin": 3,
+              "signal": "Masse capteur",
+              "expected_voltage_v": 0.0
+            }
+          ],
+          "tests": [
+            "Contact mis, débranché : vérifier +5 V entre pin 1 et 3.",
+            "Oscilloscope : motif d’impulsions régulier 0–5 V pendant le démarrage.",
+            "En cas d’absence de signal, vérifier continuité faisceau et alimentation 5 V."
+          ]
+        },
+        "cmp": {
+          "name": "Capteur d’arbre à cames",
+          "type": "Effet Hall 3 fils",
+          "location": "Extrémité de l’arbre à cames, côté distribution.",
+          "pins": [
+            {
+              "pin": 1,
+              "signal": "+5V référence",
+              "expected_voltage_v": 5.0
+            },
+            {
+              "pin": 2,
+              "signal": "Signal CMP",
+              "expected_voltage_v": "Impulsions 0–5 V synchronisées avec l’arbre à cames"
+            },
+            {
+              "pin": 3,
+              "signal": "Masse capteur",
+              "expected_voltage_v": 0.0
+            }
+          ],
+          "tests": [
+            "Contact mis, vérifier +5 V entre pin 1 et 3.",
+            "Oscilloscope : signal carré 0–5 V moteur au ralenti.",
+            "Comparer la synchronisation CKP/CMP pour valider la distribution."
+          ]
+        },
+        "lambda_upstream": {
+          "name": "Sonde lambda amont",
+          "type": "O2 zirconia, 4 fils",
+          "location": "Collecteur d’échappement, avant catalyseur.",
+          "pins": [
+            {
+              "pin": 1,
+              "signal": "Alimentation chauffage",
+              "expected_voltage_v": "12 V batterie moteur tournant"
+            },
+            {
+              "pin": 2,
+              "signal": "Masse chauffage",
+              "expected_voltage_v": 0.0
+            },
+            {
+              "pin": 3,
+              "signal": "Signal sonde",
+              "expected_voltage_v": "Oscillation 0.1–0.9 V en boucle fermée"
+            },
+            {
+              "pin": 4,
+              "signal": "Masse signal",
+              "expected_voltage_v": 0.0
+            }
+          ],
+          "tests": [
+            "Contrôler la résistance du chauffage : typiquement 3–8 Ω entre les deux fils chauffage.",
+            "Moteur chaud au ralenti : tension signal alternant rapidement entre 0.1 et 0.9 V.",
+            "Enrichir momentanément (coup d’accélérateur) : tension proche de 0.9 V."
+          ]
+        },
+        "fuel_pressure_sensor": {
+          "name": "Capteur de pression carburant",
+          "type": "Capteur analogique 3 fils",
+          "location": "Sur la rampe d’injection essence.",
+          "pins": [
+            {
+              "pin": 1,
+              "signal": "+5V référence",
+              "expected_voltage_v": 5.0
+            },
+            {
+              "pin": 2,
+              "signal": "Signal pression",
+              "expected_voltage_v": "Environ 1.5–2.0 V au ralenti (~4.0 bar)"
+            },
+            {
+              "pin": 3,
+              "signal": "Masse capteur",
+              "expected_voltage_v": 0.0
+            }
+          ],
+          "tests": [
+            "Contact mis : vérifier +5 V et masse.",
+            "Comparer la pression lue au diag (~4.0 bar) avec un manomètre mécanique.",
+            "Chute de pression rapide après coupure : suspicion de fuite injecteur ou clapet pompe."
+          ]
+        },
+        "ect": {
+          "name": "Capteur température liquide de refroidissement (ECT)",
+          "type": "NTC 2 fils ou 4 fils combiné",
+          "location": "Boîtier de sortie de liquide de refroidissement sur la culasse.",
+          "characteristic": {
+            "resistance_20c_ohm": "2000–3000",
+            "resistance_90c_ohm": "200–300"
+          },
+          "tests": [
+            "Mesurer la résistance capteur débranché : comparer à la température ambiante.",
+            "Sur diag, température doit monter progressivement jusqu’à ~90 °C moteur chaud.",
+            "Discordance valeur diag / mesure réelle → faisceau ou capteur défectueux."
+          ]
+        },
+        "maf": {
+          "name": "Capteur de masse d’air (MAF)",
+          "type": "Capteur débitmètre à film chaud, 5 fils",
+          "location": "Sur le conduit d’admission, après le filtre à air.",
+          "pins": [
+            {
+              "pin": 1,
+              "signal": "Alimentation 12 V",
+              "expected_voltage_v": "12 V contact mis"
+            },
+            {
+              "pin": 2,
+              "signal": "Masse",
+              "expected_voltage_v": 0.0
+            },
+            {
+              "pin": 3,
+              "signal": "+5V référence",
+              "expected_voltage_v": 5.0
+            },
+            {
+              "pin": 4,
+              "signal": "Signal MAF",
+              "expected_voltage_v": "2–7 g/s au ralenti, augmentation avec le régime"
+            },
+            {
+              "pin": 5,
+              "signal": "Température air intégrée (IAT)",
+              "expected_voltage_v": "Tension variable 0.5–4.5 V selon la température"
+            }
+          ],
+          "tests": [
+            "Sur diag, vérifier masse d’air ~3–5 g/s au ralenti stabilisé.",
+            "Débrancher le MAF : le calculateur passe en valeur de secours, comparer le comportement moteur.",
+            "Inspecter les prises d’air parasites si la valeur est trop basse."
+          ]
+        }
+      }
+    },
+    {
+      "name": "2.5L 20v MPI",
+      "engine_code": "CBTA",
+      "displacement_l": 2.5,
+      "cylinders": 5,
+      "power_hp": 170,
+      "power_kw": 127,
+      "torque_nm": 240,
+      "injection_type": "Injection multipoint séquentielle",
+      "key_points": [
+        "Moteur 5 cylindres 2.5L CBTA, 4 soupapes par cylindre.",
+        "Distribution par chaîne avec calage variable sur l’admission.",
+        "Pression carburant régulée autour de 4.0 bar sur le rail basse pression.",
+        "Gestion moteur type Bosch ME/Med avec capteurs CKP/CMP à effet Hall.",
+        "Utilisation de bobines crayons individuelles et bougies à électrodes fines."
+      ],
+      "sensors": {
+        "ckp": {
+          "name": "Capteur de vilebrequin",
+          "type": "Effet Hall 3 fils",
+          "location": "Boîte de vitesses, lecture sur la couronne du volant.",
+          "pins": [
+            {
+              "pin": 1,
+              "signal": "+5V référence",
+              "expected_voltage_v": 5.0
+            },
+            {
+              "pin": 2,
+              "signal": "Signal CKP",
+              "expected_voltage_v": "0–5 V en créneaux pendant le démarrage"
+            },
+            {
+              "pin": 3,
+              "signal": "Masse",
+              "expected_voltage_v": 0.0
+            }
+          ],
+          "tests": [
+            "Contact mis : vérifier +5 V entre pin 1 et masse.",
+            "Démarrage : vérifier présence d’un signal carré régulier au scope.",
+            "Absence de signal → vérifier jeu capteur/couronne, limaille, faisceau, alimentation."
+          ]
+        },
+        "cmp": {
+          "name": "Capteur d’arbre à cames",
+          "type": "Effet Hall 3 fils",
+          "location": "Côté distribution sur la culasse.",
+          "pins": [
+            {
+              "pin": 1,
+              "signal": "+5V référence",
+              "expected_voltage_v": 5.0
+            },
+            {
+              "pin": 2,
+              "signal": "Signal CMP",
+              "expected_voltage_v": "0–5 V, une impulsion par cycle arbre à cames"
+            },
+            {
+              "pin": 3,
+              "signal": "Masse",
+              "expected_voltage_v": 0.0
+            }
+          ],
+          "tests": [
+            "Comparer la phase CKP/CMP pour détecter un décalage de distribution.",
+            "Oscilloscope : vérifier que le motif CMP est stable sans coupures."
+          ]
+        },
+        "lambda_upstream": {
+          "name": "Sonde lambda amont",
+          "type": "O2 zirconia ou large bande selon variante",
+          "location": "Collecteur d’échappement avant catalyseur.",
+          "signal_behavior": {
+            "narrowband_voltage_v": "0.1–0.9 V en oscillation en boucle fermée",
+            "stoichiometric_crossing_v": 0.45
+          },
+          "tests": [
+            "Moteur chaud, ralenti stabilisé : tension alternant régulièrement entre ~0.1 et 0.9 V.",
+            "Accélération franche : tension riche proche de 0.9 V.",
+            "Décélération : tension proche de 0.1 V (mélange pauvre / coupure carburant)."
+          ]
+        },
+        "fuel_pressure_sensor": {
+          "name": "Capteur de pression carburant",
+          "type": "Capteur 3 fils basse pression",
+          "location": "Sur la rampe d’injection ou proche du filtre suivant configuration.",
+          "pressure_spec_bar": {
+            "idle": 4.0,
+            "engine_off_residual_min": 3.0
+          },
+          "signal_voltage_v": {
+            "min": 0.5,
+            "max": 4.5,
+            "idle_typ": 1.5
+          },
+          "tests": [
+            "Contact mis, pompe amorcée : pression autour de 4.0 bar.",
+            "Après coupure moteur : pression ne doit pas chuter immédiatement sous 3.0 bar.",
+            "Écart entre valeur diag et manomètre > 0.5 bar → suspecter capteur ou régulateur."
+          ]
+        },
+        "ect": {
+          "name": "Capteur de température LDR (ECT)",
+          "type": "NTC",
+          "location": "Sur le circuit de refroidissement, sortie culasse.",
+          "resistance_curve_ohm": [
+            {
+              "temperature_c": 20,
+              "range": "2000–3000"
+            },
+            {
+              "temperature_c": 80,
+              "range": "275–375"
+            },
+            {
+              "temperature_c": 90,
+              "range": "200–300"
+            }
+          ],
+          "tests": [
+            "Moteur froid : valeur diag proche de la température ambiante.",
+            "Moteur chaud : ~90 °C ; si valeur figée à -40 °C ou 140 °C → capteur / faisceau.",
+            "Mesure de résistance directement sur le capteur et comparaison avec la courbe."
+          ]
+        },
+        "maf": {
+          "name": "Débitmètre d’air (MAF)",
+          "type": "Film chaud avec IAT intégré",
+          "location": "Conduit d’admission entre filtre à air et papillon.",
+          "expected_values": {
+            "idle_g_s": "3–6",
+            "at_2500_rpm_g_s": "15–25"
+          },
+          "tests": [
+            "Sur diag, contrôler la masse d’air au ralenti : environ 3–6 g/s.",
+            "Vérifier qu’elle augmente proportionnellement avec le régime.",
+            "Si valeur très basse : contrôler filtre à air, prises d’air, fuites avant MAF.",
+            "Si valeur figée : contrôler alimentation 12 V, 5 V et masse du capteur."
+          ]
+        },
+        "map": {
+          "name": "Capteur de pression absolue (MAP)",
+          "type": "Capteur 3 fils",
+          "location": "Sur le collecteur d’admission.",
+          "tests": [
+            "Contact mis : +5 V et masse stables.",
+            "Ralenti : pression lue environ 30–40 kPa (forte dépression).",
+            "Accélération pleine charge : pression proche de la pression atmosphérique (~100 kPa)."
+          ]
+        }
+      }
+    },
+    {
+      "name": "2.5L 20v MPI PZEV",
+      "engine_code": "CBUA",
+      "displacement_l": 2.5,
+      "cylinders": 5,
+      "power_hp": 170,
+      "power_kw": 127,
+      "torque_nm": 240,
+      "injection_type": "Injection multipoint séquentielle",
+      "key_points": [
+        "Variante PZEV du CBTA avec système antipollution optimisé.",
+        "Gestion moteur stricte sur évaporation carburant et contrôle de mélange.",
+        "Éléments de diagnostic similaires au CBTA (valeurs proches)."
+      ],
+      "sensors": {
+        "ckp": "Identique au moteur CBTA.",
+        "cmp": "Identique au moteur CBTA.",
+        "lambda_upstream": "Identique au moteur CBTA.",
+        "fuel_pressure_sensor": "Identique au moteur CBTA.",
+        "ect": "Identique au moteur CBTA.",
+        "maf": "Identique au moteur CBTA."
+      }
+    }
+  ]
+}
