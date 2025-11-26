@@ -1,0 +1,44 @@
+{
+  "brands": [
+    {
+      "id": "toyota",
+      "name": "Toyota",
+      "country": "Japan"
+    },
+    {
+      "id": "volkswagen",
+      "name": "Volkswagen",
+      "country": "Germany"
+    },
+    {
+      "id": "audi",
+      "name": "Audi",
+      "country": "Germany"
+    },
+    {
+      "id": "bmw",
+      "name": "BMW",
+      "country": "Germany"
+    },
+    {
+      "id": "mercedes",
+      "name": "Mercedes-Benz",
+      "country": "Germany"
+    },
+    {
+      "id": "ford",
+      "name": "Ford",
+      "country": "USA"
+    },
+    {
+      "id": "honda",
+      "name": "Honda",
+      "country": "Japan"
+    },
+    {
+      "id": "hyundai",
+      "name": "Hyundai",
+      "country": "South Korea"
+    }
+  ]
+}
