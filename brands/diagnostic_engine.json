@@ -1,0 +1,539 @@
+{
+  "vehicle": {
+    "make": "volkswagen",
+    "model": "jetta",
+    "year": 2013,
+    "engine": "CBTA/CBUA",
+    "fuel": "essence"
+  },
+  "issues": [
+    {
+      "name": "Pas de démarrage",
+      "id": "no_start",
+      "steps": [
+        {
+          "id": "q1",
+          "question": "Le démarreur entraîne-t-il le moteur lorsque tu tournes la clé (bruit de démarrage franc) ?",
+          "options": {
+            "oui": "q2",
+            "non": "path_no_crank"
+          }
+        },
+        {
+          "id": "q2",
+          "question": "Tension batterie pendant le démarrage (mesurée au multimètre) est-elle supérieure à 10.0 V ?",
+          "options": {
+            "oui": "q3",
+            "non": "path_low_battery"
+          }
+        },
+        {
+          "id": "q3",
+          "question": "Entends-tu la pompe à essence primer (bzzz 2–3 s) au contact sur le réservoir arrière ?",
+          "options": {
+            "oui": "q4",
+            "non": "path_no_pump_noise"
+          }
+        },
+        {
+          "id": "q4",
+          "question": "Pression carburant mesurée au rail est-elle proche de 4.0 bar pendant le démarrage ?",
+          "options": {
+            "oui": "q5",
+            "non": "path_low_fuel_pressure"
+          }
+        },
+        {
+          "id": "q5",
+          "question": "Le capteur CKP fournit-il un signal 0–5 V stable au scope pendant le démarrage ?",
+          "options": {
+            "oui": "q6",
+            "non": "path_ckp_fault"
+          }
+        },
+        {
+          "id": "q6",
+          "question": "Le capteur d’arbre à cames (CMP) présente-t-il un signal 0–5 V synchronisé avec CKP ?",
+          "options": {
+            "oui": "q7",
+            "non": "path_cmp_sync"
+          }
+        },
+        {
+          "id": "q7",
+          "question": "Les bougies sont-elles humides d’essence après plusieurs tentatives de démarrage ?",
+          "options": {
+            "oui": "path_ignition_failure",
+            "non": "path_no_injection"
+          }
+        }
+      ],
+      "results": {
+        "path_no_crank": {
+          "diagnosis": "Pas de rotation moteur : problème de circuit de démarrage (batterie, câbles, relais, démarreur).",
+          "solution": "Contrôler l’état de la batterie (>12.4 V à l’arrêt), vérifier les connexions de masse châssis/moteur, contrôler le relais de démarreur et la tension d’alimentation au démarreur. Remplacer le démarreur si alimentation correcte mais aucune rotation."
+        },
+        "path_low_battery": {
+          "diagnosis": "Tension batterie insuffisante pendant le démarrage (<10.0 V).",
+          "solution": "Recharger ou remplacer la batterie. Contrôler alternateur et chutes de tension sur câbles + et masse. Un affaissement trop important peut perturber l’ECU et empêcher l’injection/allumage."
+        },
+        "path_no_pump_noise": {
+          "diagnosis": "Pompe à essence basse pression non commandée ou défaillante.",
+          "solution": "Contrôler le relais de pompe, le fusible, la présence de 12 V et masse à la pompe lors de la mise du contact. Si alimentation présente mais pas de bruit ni de pression, remplacer la pompe à carburant dans le réservoir."
+        },
+        "path_low_fuel_pressure": {
+          "diagnosis": "Pression carburant insuffisante au rail lors du démarrage.",
+          "solution": "Vérifier le filtre à carburant, la pompe basse pression et le régulateur. Contrôler la pression avant et après le filtre. Remplacer le filtre colmaté ou la pompe si la pression ne monte pas à ~4.0 bar."
+        },
+        "path_ckp_fault": {
+          "diagnosis": "Absence de signal CKP fiable : l’ECU ne peut pas synchroniser l’allumage et l’injection.",
+          "solution": "Contrôler alimentation 5 V, masse et faisceau du capteur CKP. Vérifier la présence de limaille sur la tête du capteur et l’état de la couronne. Remplacer le capteur si l’alimentation est correcte mais aucun signal au scope."
+        },
+        "path_cmp_sync": {
+          "diagnosis": "Signal CMP absent ou désynchronisé par rapport à CKP (possible décalage distribution).",
+          "solution": "Contrôler la chaîne de distribution, les repères de calage et le tendeur. Vérifier le capteur CMP et son faisceau. Recaler la distribution ou remplacer le capteur selon le résultat des tests."
+        },
+        "path_ignition_failure": {
+          "diagnosis": "Carburant présent (bougies humides) mais pas d’allumage correct.",
+          "solution": "Contrôler la présence d’étincelle sur chaque cylindre, vérifier les bobines crayons, l’alimentation 12 V, la commande ECU et l’état des bougies. Remplacer les bougies et bobines défectueuses. Contrôler également le capteur de cliquetis si misfire généralisé."
+        },
+        "path_no_injection": {
+          "diagnosis": "Pas d’essence visible sur les bougies : absence d’injection.",
+          "solution": "Contrôler le signal commande injecteurs à l’oscilloscope, la pression carburant et l’immobilizer. Vérifier les codes défaut dans l’ECU. En cas d’absence de commande injecteur avec CKP/CMP OK, suspecter un blocage par l’antidémarrage ou un défaut interne ECU."
+        }
+      }
+    },
+    {
+      "name": "Difficulté à démarrer",
+      "id": "hard_start",
+      "steps": [
+        {
+          "id": "q1",
+          "question": "Le démarrage est surtout difficile à froid (moteur froid après plusieurs heures) ?",
+          "options": {
+            "oui": "q2",
+            "non": "q4"
+          }
+        },
+        {
+          "id": "q2",
+          "question": "Température ECT lue au diagnostic correspond-elle à la température ambiante (±5 °C) ?",
+          "options": {
+            "oui": "q3",
+            "non": "path_ect_fault"
+          }
+        },
+        {
+          "id": "q3",
+          "question": "Pression carburant au démarrage à froid atteint-elle rapidement ~4.0 bar ?",
+          "options": {
+            "oui": "path_cold_fuel_ok",
+            "non": "path_fuel_leakdown"
+          }
+        },
+        {
+          "id": "q4",
+          "question": "Le démarrage est surtout difficile à chaud après un arrêt court (10–30 min) ?",
+          "options": {
+            "oui": "q5",
+            "non": "path_generic_hard_start"
+          }
+        },
+        {
+          "id": "q5",
+          "question": "La pression résiduelle carburant après arrêt 20 min est-elle encore supérieure à 3.0 bar ?",
+          "options": {
+            "oui": "q6",
+            "non": "path_hot_vapor_lock"
+          }
+        },
+        {
+          "id": "q6",
+          "question": "Y a-t-il des codes défaut liés au MAF ou à la sonde lambda (mélange riche/pauvre) ?",
+          "options": {
+            "oui": "path_mixture_related",
+            "non": "path_starter_speed"
+          }
+        }
+      ],
+      "results": {
+        "path_ect_fault": {
+          "diagnosis": "Capteur ECT défectueux, indiquant une mauvaise température moteur.",
+          "solution": "Mesurer la résistance du capteur et la comparer à la courbe. Si la valeur ne correspond pas, remplacer le capteur. Une ECT bloquée à -40 °C enrichit fortement et peut saturer le démarrage, alors qu’une ECT bloquée à 120 °C appauvrit excessivement à froid."
+        },
+        "path_cold_fuel_ok": {
+          "diagnosis": "Alimentation carburant correcte à froid, difficile à démarrer probablement lié à l’allumage ou mélange.",
+          "solution": "Contrôler l’état des bougies (encrassement, écartement), des bobines et vérifier le MAF. Nettoyer le corps de papillon et effectuer un apprentissage si nécessaire. Vérifier les prises d’air parasites provoquant un mélange pauvre au démarrage."
+        },
+        "path_fuel_leakdown": {
+          "diagnosis": "Chute de pression carburant excessive à l’arrêt (injecteur qui fuit, clapet de pompe défectueux).",
+          "solution": "Contrôler les fuites externes, puis faire un test de maintien de pression. Si la pression chute rapidement, isoler la rampe et la pompe pour identifier l’élément défaillant. Remplacer la pompe/filtres ou les injecteurs qui fuient."
+        },
+        "path_hot_vapor_lock": {
+          "diagnosis": "Perte de pression et possible formation de vapeur dans le circuit à chaud.",
+          "solution": "Contrôler la pompe, le filtre et les conduites proches de sources de chaleur. S’assurer du bon fonctionnement du régulateur de pression. Remplacer les composants défaillants et vérifier l’isolation thermique."
+        },
+        "path_mixture_related": {
+          "diagnosis": "Démarrage difficile lié à une correction de mélange excessive (MAF ou lambda).",
+          "solution": "Vérifier le MAF (valeur au ralenti et dynamique), nettoyer si nécessaire avec produit spécifique, contrôler les fuites d’air et l’état de la sonde lambda amont. Effacer les codes et recontrôler le comportement au démarrage."
+        },
+        "path_starter_speed": {
+          "diagnosis": "Vitesse de rotation trop faible à cause du démarreur fatigué malgré une batterie correcte.",
+          "solution": "Mesurer le régime de démarrage (RPM) au diag. Si très bas, contrôler la chute de tension sur le câblage et remplacer le démarreur si nécessaire."
+        },
+        "path_generic_hard_start": {
+          "diagnosis": "Démarrage difficile non clairement lié à la température, possiblement multi-factoriel.",
+          "solution": "Vérifier l’ensemble : ECT, MAF, pression carburant, bougies, bobines, étanchéité d’admission. Faire un scan complet des codes défaut et analyser les valeurs de correction de carburant (LTFT/STFT) pour orienter le diagnostic."
+        }
+      }
+    },
+    {
+      "name": "Ralenti instable",
+      "id": "rough_idle",
+      "steps": [
+        {
+          "id": "q1",
+          "question": "Le ralenti fluctue principalement moteur chaud, sans consommateurs électriques ?",
+          "options": {
+            "oui": "q2",
+            "non": "q5"
+          }
+        },
+        {
+          "id": "q2",
+          "question": "Masse d’air MAF au ralenti est-elle stable entre 3 et 6 g/s ?",
+          "options": {
+            "oui": "q3",
+            "non": "path_maf_idle"
+          }
+        },
+        {
+          "id": "q3",
+          "question": "Pression d’admission (MAP) au ralenti est-elle autour de 30–40 kPa (forte dépression) ?",
+          "options": {
+            "oui": "q4",
+            "non": "path_vacuum_leak"
+          }
+        },
+        {
+          "id": "q4",
+          "question": "Les corrections de carburant (LTFT/STFT) sont-elles dans ±10 % ?",
+          "options": {
+            "oui": "path_check_ignition_idle",
+            "non": "path_mixture_issue_idle"
+          }
+        },
+        {
+          "id": "q5",
+          "question": "Le ralenti se dégrade surtout avec la climatisation ou forte charge électrique ?",
+          "options": {
+            "oui": "path_load_comp_idle",
+            "non": "path_generic_idle"
+          }
+        }
+      ],
+      "results": {
+        "path_maf_idle": {
+          "diagnosis": "MAF défaillant ou lecture erronée au ralenti.",
+          "solution": "Contrôler la propreté du capteur, vérifier les valeurs sur plusieurs régimes, comparer avec les spécifications. Nettoyer avec un spray spécifique MAF ou remplacer si la valeur reste incohérente. Contrôler aussi les prises d’air avant le MAF."
+        },
+        "path_vacuum_leak": {
+          "diagnosis": "Fuite de dépression dans le collecteur d’admission ou les durites.",
+          "solution": "Contrôler visuellement toutes les durites de dépression, le servo-frein, les joints de collecteur et le corps de papillon. Utiliser fumigène pour localiser les fuites. Remplacer les durites fissurées ou les joints défectueux."
+        },
+        "path_mixture_issue_idle": {
+          "diagnosis": "Correction de carburant importante au ralenti (mélange trop riche ou trop pauvre).",
+          "solution": "Analyser STFT/LTFT. Si riche, vérifier injecteurs qui fuient, pression carburant trop élevée, sonde lambda. Si pauvre, chercher fuites d’air, MAF sous-estimé, pompe faible. Corriger la cause et réinitialiser les adaptations."
+        },
+        "path_check_ignition_idle": {
+          "diagnosis": "Ralenti instable avec mélange correct, probable problème d’allumage ou de mécanique (jeu soupapes, compression).",
+          "solution": "Contrôler misfire par cylindre au diag, tester bobines et bougies, faire un test de compression. Remplacer les éléments d’allumage défectueux ou corriger les problèmes mécaniques détectés."
+        },
+        "path_load_comp_idle": {
+          "diagnosis": "Gestion de charge au ralenti (clim, alternateur) mal compensée.",
+          "solution": "Contrôler l’activation de la clim et la commande de ralenti via l’ECU. Nettoyer le papillon et effectuer l’apprentissage ralenti. Vérifier l’état de l’alternateur et la tension de charge."
+        },
+        "path_generic_idle": {
+          "diagnosis": "Ralenti instable intermittent sans cause évidente unique.",
+          "solution": "Effectuer un balayage complet des paramètres : ECT, MAF, MAP, lambda, corrections carburant, misfire. Nettoyer l’admission, vérifier la ventilation du carter (PCV) et mettre à jour le logiciel ECU si une mise à jour constructeur existe."
+        }
+      }
+    },
+    {
+      "name": "Ratés / misfire",
+      "id": "misfire",
+      "steps": [
+        {
+          "id": "q1",
+          "question": "Le misfire est-il localisé sur un cylindre précis (ex: P0302) ?",
+          "options": {
+            "oui": "q2",
+            "non": "q4"
+          }
+        },
+        {
+          "id": "q2",
+          "question": "Le remplacement croisé de bobine/bougie/injecteur déplace-t-il le misfire vers un autre cylindre ?",
+          "options": {
+            "oui": "path_component_fault",
+            "non": "q3"
+          }
+        },
+        {
+          "id": "q3",
+          "question": "La compression du cylindre concerné est-elle significativement plus basse que les autres ?",
+          "options": {
+            "oui": "path_low_compression",
+            "non": "path_intermittent_misfire"
+          }
+        },
+        {
+          "id": "q4",
+          "question": "Le misfire touche plusieurs cylindres, surtout à froid ?",
+          "options": {
+            "oui": "q5",
+            "non": "path_global_misfire_other"
+          }
+        },
+        {
+          "id": "q5",
+          "question": "Les corrections de carburant indiquent-elles un mélange anormal (riche/pauvre) global ?",
+          "options": {
+            "oui": "path_mixture_global",
+            "non": "path_ignition_global"
+          }
+        }
+      ],
+      "results": {
+        "path_component_fault": {
+          "diagnosis": "Défaut localisé d’une bobine, bougie ou injecteur.",
+          "solution": "Remplacer l’élément identifié par le test croisé. Ex: si le misfire suit la bobine en la déplaçant du cylindre 2 au 3, remplacer cette bobine. Toujours contrôler l’état des bougies et le câblage injecteur."
+        },
+        "path_low_compression": {
+          "diagnosis": "Problème mécanique interne (soupape, segmentation, siège de soupape) sur un cylindre.",
+          "solution": "Effectuer un test de fuite cylindres pour confirmer l’origine (soupapes, segments, joint de culasse). Réparer en conséquence (réfection culasse, segmentation, etc.)."
+        },
+        "path_intermittent_misfire": {
+          "diagnosis": "Misfire intermittent sur un cylindre sans cause immédiatement évidente.",
+          "solution": "Contrôler connecteurs de bobine et injecteur, vibrations du faisceau, oxydation. Vérifier l’absence de fissure sur l’isolant de la bougie. Surveiller le cylindre concerné en conditions réelles et recontrôler les logs."
+        },
+        "path_mixture_global": {
+          "diagnosis": "Misfire multiple lié à un mélange globalement incorrect (trop riche ou trop pauvre).",
+          "solution": "Contrôler MAF, fuites d’air, pression carburant, sonde lambda. Corriger la cause de dérive de mélange (nettoyage MAF, réparation fuite, remplacement sonde). Réinitialiser adaptations carburant et recontrôler."
+        },
+        "path_ignition_global": {
+          "diagnosis": "Misfire multiple sans anomalie majeure de mélange, possible problème d’alimentation bobines ou tension.",
+          "solution": "Contrôler la tension d’alimentation des bobines, la masse moteur, et l’alternateur (surtension, ondulations). Inspecter les bobines si anciennes et envisager leur remplacement préventif si plusieurs sont défaillantes."
+        },
+        "path_global_misfire_other": {
+          "diagnosis": "Misfire généralisé non clairement lié à un seul sous-système.",
+          "solution": "Vérifier ECT, MAF, lambda, pression carburant, présence d’huile dans les puits de bougies, et mise à jour logicielle ECU. Si tout est correct, réaliser une surveillance longue avec enregistrement de données pour corrélation avec température et charge."
+        }
+      }
+    },
+    {
+      "name": "Fumée d’échappement anormale",
+      "id": "exhaust_smoke",
+      "steps": [
+        {
+          "id": "q1",
+          "question": "La fumée est-elle surtout bleue (consommation d’huile) ?",
+          "options": {
+            "oui": "path_blue_smoke",
+            "non": "q2"
+          }
+        },
+        {
+          "id": "q2",
+          "question": "La fumée est-elle noire (mélange trop riche) ?",
+          "options": {
+            "oui": "path_black_smoke",
+            "non": "q3"
+          }
+        },
+        {
+          "id": "q3",
+          "question": "La fumée est-elle blanche épaisse et persistante (pas juste condensation à froid) ?",
+          "options": {
+            "oui": "path_white_smoke",
+            "non": "path_no_abnormal_smoke"
+          }
+        }
+      ],
+      "results": {
+        "path_blue_smoke": {
+          "diagnosis": "Fumée bleue : consommation d’huile par les segments, guides de soupapes ou reniflard.",
+          "solution": "Mesurer la consommation d’huile, vérifier la dépression dans le carter (PCV), contrôler la compression. Si PCV bouché ou défectueux, le remplacer. Si consommation importante avec compression faible, envisager une réfection moteur."
+        },
+        "path_black_smoke": {
+          "diagnosis": "Fumée noire : mélange trop riche (MAF, lambda, injecteurs, pression carburant).",
+          "solution": "Contrôler MAF (valeur et propreté), sonde lambda, pression carburant (trop élevée), injecteurs fuyards. Corriger l’élément en cause et vérifier les corrections carburant après réparation."
+        },
+        "path_white_smoke": {
+          "diagnosis": "Fumée blanche persistante : possible présence de liquide de refroidissement dans les cylindres.",
+          "solution": "Contrôler le niveau de liquide de refroidissement, rechercher traces de mayonnaise, effectuer un test CO2 dans le vase d’expansion et un test de pression du circuit. En cas de confirmation, contrôler joint de culasse, planéité culasse/bloc."
+        },
+        "path_no_abnormal_smoke": {
+          "diagnosis": "Pas de fumée anormale identifiée, aspect peut être normal (condensation) ou intermittent.",
+          "solution": "Surveiller en conditions variées (froid/chaud, charge), enregistrer vidéo ou données si le symptôme réapparaît. Vérifier l’absence de codes défaut liés au mélange ou à la combustion."
+        }
+      }
+    },
+    {
+      "name": "Perte de puissance",
+      "id": "low_power",
+      "steps": [
+        {
+          "id": "q1",
+          "question": "Y a-t-il des codes défaut actifs concernant le MAF, le MAP ou la pression carburant ?",
+          "options": {
+            "oui": "path_sensor_related_power",
+            "non": "q2"
+          }
+        },
+        {
+          "id": "q2",
+          "question": "La pression carburant reste-t-elle proche de 4.0 bar à pleine charge ?",
+          "options": {
+            "oui": "q3",
+            "non": "path_fuel_pump_weak"
+          }
+        },
+        {
+          "id": "q3",
+          "question": "La valeur MAF augmente-t-elle correctement avec le régime et la charge (par ex. >50 g/s à forte charge) ?",
+          "options": {
+            "oui": "q4",
+            "non": "path_maf_underreading_power"
+          }
+        },
+        {
+          "id": "q4",
+          "question": "Le système d’échappement est-il libre (pas de catalyseur colmaté) ?",
+          "options": {
+            "oui": "path_check_mechanical_power",
+            "non": "path_cat_restriction"
+          }
+        }
+      ],
+      "results": {
+        "path_sensor_related_power": {
+          "diagnosis": "Perte de puissance liée à un capteur MAF/MAP/pression carburant défectueux.",
+          "solution": "Traiter d’abord les codes présents : vérifier alimentation 5 V, masse et signal de chaque capteur. Remplacer le capteur défaillant après tests comparatifs (valeurs réelles vs attendues)."
+        },
+        "path_fuel_pump_weak": {
+          "diagnosis": "Pompe à carburant incapable de maintenir la pression sous forte charge.",
+          "solution": "Contrôler intensité absorbée par la pompe, état du filtre et tensions d’alimentation. Remplacer la pompe si la pression chute significativement à l’accélération malgré un circuit propre."
+        },
+        "path_maf_underreading_power": {
+          "diagnosis": "MAF sous-estimant le débit d’air, entraînant un mélange appauvri et une perte de puissance.",
+          "solution": "Nettoyer ou remplacer le MAF, contrôler les conduits d’admission et le filtre à air, vérifier qu’il n’y a pas de fuite entre MAF et papillon. Refaire un essai route en surveillant la valeur MAF."
+        },
+        "path_cat_restriction": {
+          "diagnosis": "Catalyseur ou échappement obstrué, limitant le débit des gaz.",
+          "solution": "Mesurer la contre-pression à l’échappement ou comparer la pression amont/aval. Si restriction confirmée, remplacer le catalyseur ou la section bouchée."
+        },
+        "path_check_mechanical_power": {
+          "diagnosis": "Perte de puissance sans défaut électronique évident : suspect mécanique (compression, distribution).",
+          "solution": "Effectuer un test de compression et de fuite cylindres, contrôler le calage de distribution et l’absence de glissement de chaîne/poulie. Corriger tout défaut mécanique identifié."
+        }
+      }
+    },
+    {
+      "name": "Surchauffe moteur",
+      "id": "overheat",
+      "steps": [
+        {
+          "id": "q1",
+          "question": "Le niveau de liquide de refroidissement est-il correct (entre min et max) sans fuite visible ?",
+          "options": {
+            "oui": "q2",
+            "non": "path_coolant_leak"
+          }
+        },
+        {
+          "id": "q2",
+          "question": "Le ventilateur de refroidissement se déclenche-t-il lorsque la température dépasse ~95–100 °C ?",
+          "options": {
+            "oui": "q3",
+            "non": "path_fan_fault"
+          }
+        },
+        {
+          "id": "q3",
+          "question": "Le radiateur est-il chaud de manière uniforme (entrée et sortie) lorsque le moteur est chaud ?",
+          "options": {
+            "oui": "path_check_head_gasket_overheat",
+            "non": "path_thermostat_or_blockage"
+          }
+        }
+      ],
+      "results": {
+        "path_coolant_leak": {
+          "diagnosis": "Fuite de liquide de refroidissement ou niveau insuffisant.",
+          "solution": "Rechercher les fuites sur durites, radiateur, pompe à eau, vase d’expansion. Réparer les éléments défectueux, purger correctement le circuit et recontrôler la température."
+        },
+        "path_fan_fault": {
+          "diagnosis": "Ventilateur de refroidissement ne fonctionnant pas correctement.",
+          "solution": "Contrôler fusibles, relais, commande ECU et alimentation du ventilateur. Tester le ventilateur en alimentation directe. Remplacer le ventilateur ou les éléments de commande défaillants."
+        },
+        "path_thermostat_or_blockage": {
+          "diagnosis": "Thermostat bloqué fermé ou obstruction dans le radiateur.",
+          "solution": "Contrôler l’ouverture du thermostat en le déposant et en le testant à chaud, vérifier l’écoulement dans le radiateur. Remplacer le thermostat ou le radiateur si nécessaire."
+        },
+        "path_check_head_gasket_overheat": {
+          "diagnosis": "Surchauffe sans problème évident de ventilateur ou radiateur, possible début de joint de culasse.",
+          "solution": "Effectuer un test CO2 dans le liquide de refroidissement, contrôler la présence de bulles dans le vase, vérifier la compression et l’absence de mayonnaise. Si confirmé, déposer la culasse et remplacer le joint avec contrôle de la planéité."
+        }
+      }
+    },
+    {
+      "name": "Voyant moteur allumé (MIL)",
+      "id": "mil_on",
+      "steps": [
+        {
+          "id": "q1",
+          "question": "Le code défaut est-il lié au système de mélange (P0171/P0172, MAF, lambda) ?",
+          "options": {
+            "oui": "path_mixture_mil",
+            "non": "q2"
+          }
+        },
+        {
+          "id": "q2",
+          "question": "Le code concerne-t-il un misfire (P0300–P030x) ?",
+          "options": {
+            "oui": "path_misfire_mil",
+            "non": "q3"
+          }
+        },
+        {
+          "id": "q3",
+          "question": "Le code concerne-t-il la pression carburant ou un capteur moteur (CKP/CMP/ECT) ?",
+          "options": {
+            "oui": "path_sensor_mil",
+            "non": "path_other_mil"
+          }
+        }
+      ],
+      "results": {
+        "path_mixture_mil": {
+          "diagnosis": "Voyant lié à un problème de mélange air/carburant.",
+          "solution": "Suivre un protocole mélange : contrôler MAF, fuites d’air, sonde lambda, pression carburant, corrections LTFT/STFT. Réparer la cause et effacer les codes, puis vérifier que les adaptations restent stables."
+        },
+        "path_misfire_mil": {
+          "diagnosis": "Voyant lié à un ou plusieurs ratés de combustion.",
+          "solution": "Utiliser l’arbre de diagnostic 'Ratés / misfire' pour identifier le cylindre ou la cause. Remplacer les composants défectueux (bougies, bobines, injecteurs) ou corriger le problème mécanique."
+        },
+        "path_sensor_mil": {
+          "diagnosis": "Voyant lié à un capteur moteur critique.",
+          "solution": "Contrôler la référence 5 V, la masse et le signal du capteur concerné (CKP, CMP, ECT, capteur pression carburant). Corriger le faisceau, le capteur ou la distribution en fonction des mesures."
+        },
+        "path_other_mil": {
+          "diagnosis": "Voyant lié à un autre système (EVAP, EGR si présent, catalyseur, etc.).",
+          "solution": "Suivre les procédures spécifiques du DTC concerné dans la documentation constructeur. Vérifier l’étanchéité EVAP, l’efficacité catalyseur, la commande de clapets d’admission si présent."
+        }
+      }
+    }
+  ]
+}
