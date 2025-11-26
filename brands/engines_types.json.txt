@@ -1,0 +1,84 @@
+{
+  "make": "volkswagen",
+  "model": "jetta",
+  "year": 2013,
+  "engine_types": [
+    {
+      "id": "essence",
+      "label": "Essence",
+      "description": "Moteurs essence atmosphériques et turbo",
+      "engines": [
+        {
+          "code": "CBPA",
+          "displacement_l": 2.0,
+          "cylinders": 4,
+          "power_hp": 115,
+          "fuel_system": "Injection multipoint",
+          "notes": "2.0L 8 soupapes, moteur de base pour Jetta en Amérique du Nord."
+        },
+        {
+          "code": "CBTA",
+          "displacement_l": 2.5,
+          "cylinders": 5,
+          "power_hp": 170,
+          "fuel_system": "Injection multipoint",
+          "notes": "2.5L 5 cylindres, code CBTA."
+        },
+        {
+          "code": "CBUA",
+          "displacement_l": 2.5,
+          "cylinders": 5,
+          "power_hp": 170,
+          "fuel_system": "Injection multipoint",
+          "notes": "2.5L 5 cylindres, variante PZEV du CBTA."
+        },
+        {
+          "code": "CCTA",
+          "displacement_l": 2.0,
+          "cylinders": 4,
+          "power_hp": 200,
+          "fuel_system": "Injection directe, turbo",
+          "notes": "2.0 TSI utilisé sur les versions GLI."
+        },
+        {
+          "code": "CBFA",
+          "displacement_l": 2.0,
+          "cylinders": 4,
+          "power_hp": 200,
+          "fuel_system": "Injection directe, turbo, SULEV",
+          "notes": "Variante SULEV du 2.0 TSI."
+        }
+      ]
+    },
+    {
+      "id": "diesel",
+      "label": "Diesel",
+      "description": "Moteurs TDI",
+      "engines": [
+        {
+          "code": "CJAA",
+          "displacement_l": 2.0,
+          "cylinders": 4,
+          "power_hp": 140,
+          "fuel_system": "Injection directe common rail",
+          "notes": "2.0 TDI, courant sur Jetta 2013."
+        }
+      ]
+    },
+    {
+      "id": "hybride",
+      "label": "Hybride",
+      "description": "Chaîne de traction hybride essence-électrique",
+      "engines": [
+        {
+          "code": "CNLA",
+          "displacement_l": 1.4,
+          "cylinders": 4,
+          "power_hp": 150,
+          "fuel_system": "Injection directe turbo + système hybride",
+          "notes": "1.4 TSI associé au système hybride Jetta."
+        }
+      ]
+    }
+  ]
+}
